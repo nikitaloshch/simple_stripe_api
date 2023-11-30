@@ -1,10 +1,9 @@
 # Simple_Stripe_API
-
-Это веб-приложение на Django, интегрированное с API Stripe для обработки платежей. Приложение можно легко развернуть с использованием Docker.
-
 [![Python](https://img.shields.io/badge/-Python-464646?style=flat-square&logo=Python)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/-Django-464646?style=flat-square&logo=Django)](https://www.djangoproject.com/)
 [![docker](https://img.shields.io/badge/-Docker-464646?style=flat-square&logo=docker)](https://www.docker.com/)
+
+Это веб-приложение на Django, интегрированное с API Stripe для обработки платежей. Приложение можно легко развернуть с использованием Docker.
 
 ## Стек
 - Django
