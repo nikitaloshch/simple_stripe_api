@@ -1,0 +1,20 @@
+<html>
+<body>
+  <h1>{{ item.name }}</h1>
+  <p>{{ item.description }}</p>
+  <button onclick="buyItem('{{ item.id }}')">Buy</button>
+  <div id="sessionId"></div>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    function buyItem(id) {
+      fetch(`/buy/${id}`)
+        .then(response => response.json())
+        .then(session => {
+          document.getElementById("sessionId").innerHTML = `Session ID: ${session.session_id}`;
+          stripe.redirectToCheckout({sessionId: session.session_id});
+        });
+    }
+  </script>
+</body>
+</html>
+
