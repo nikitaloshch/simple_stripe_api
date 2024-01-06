@@ -1,20 +1,35 @@
+<!-- myapp/templates/item_detail.html -->
+<!DOCTYPE html>
 <html>
+<head>
+    <title>{{ item.name }}</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
 <body>
-  <h1>{{ item.name }}</h1>
-  <p>{{ item.description }}</p>
-  <button onclick="buyItem('{{ item.id }}')">Buy</button>
-  <div id="sessionId"></div>
-  <script src="https://js.stripe.com/v3/"></script>
-  <script>
-    function buyItem(id) {
-      fetch(`/buy/${id}`)
-        .then(response => response.json())
-        .then(session => {
-          document.getElementById("sessionId").innerHTML = `Session ID: ${session.session_id}`;
-          stripe.redirectToCheckout({sessionId: session.session_id});
+    <h1>{{ item.name }}</h1>
+    <p>{{ item.description }}</p>
+    <p>Price: {{ item.price }} {{ item.currency }}</p>
+    <button id="checkout-button">Buy</button>
+
+    <script>
+        var stripe = Stripe('pk_test_51OHxKVBCeltFInL0Jw1oxQuFZYGbwvZxgi7nljGG3RY0JIhrAgxUgjD4RamQNbCZh9FtN1YrlLLg4Or4E2S0tzFt009YX9hXPL');
+        var checkoutButton = document.getElementById('checkout-button');
+
+        checkoutButton.addEventListener('click', function () {
+            fetch('/buy/{{ item.id }}/')
+                .then(response => response.json())
+                .then(session => {
+                    return stripe.redirectToCheckout({ sessionId: session.session_id });
+                })
+                .then(result => {
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
-    }
-  </script>
+    </script>
 </body>
 </html>
-

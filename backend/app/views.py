@@ -1,16 +1,16 @@
-import stripe
+# myapp/views.py
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from django.views.decorators.http import require_GET
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from .models import Item
+import stripe
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-@require_GET
-def get_buy_session(request, id):
-    item = get_object_or_404(Item, pk=id)
+@csrf_exempt
+def get_stripe_session(request, item_id):
+    item = Item.objects.get(pk=item_id)
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=[{
@@ -25,12 +25,11 @@ def get_buy_session(request, id):
             'quantity': 1,
         }],
         mode='payment',
-        success_url=request.build_absolute_uri(f'/success/{item.id}'),
-        cancel_url=request.build_absolute_uri(f'/cancel/{item.id}'),
+        success_url=request.build_absolute_uri('/success/'),
+        cancel_url=request.build_absolute_uri('/cancel/'),
     )
     return JsonResponse({'session_id': session.id})
 
-@require_GET
-def get_item_page(request, id):
-    item = get_object_or_404(Item, pk=id)
+def item_detail(request, item_id):
+    item = Item.objects.get(pk=item_id)
     return render(request, 'item_detail.html', {'item': item})
